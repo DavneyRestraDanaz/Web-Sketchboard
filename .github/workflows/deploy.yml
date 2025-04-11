@@ -21,7 +21,7 @@ jobs:
       - name: Deploy to ECS
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@54.179.36.231 << 'EOF'
-            cd /var/www/Web-Sketchboard
+            cd /var/www/html/Web-Sketchboard
             git pull origin main
             # Restart Nginx or any other service if needed
             sudo systemctl restart nginx
