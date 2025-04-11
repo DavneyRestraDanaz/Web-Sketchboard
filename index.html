@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SketchBoard - Davney Restra Danaz</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            letter-spacing: 3px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            color: #cccccc;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        
+        .canvas-container {
+            background: #252525;
+            border-radius: 12px;
+            padding: 20px;
+            display: inline-block;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            margin: 20px 0;
+        }
+        
+        canvas {
+            background: #2d2d2d;
+            border-radius: 8px;
+            border: 1px solid #404040;
+            cursor: crosshair;
+            transition: transform 0.2s;
+        }
+        
+        canvas:hover {
+            transform: translateY(-2px);
+        }
+        
+        .toolbar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .toolbar button, .toolbar select {
+            background: #333333;
+            color: white;
+            border: 1px solid #404040;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toolbar button:hover, .toolbar select:hover {
+            background: #404040;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .toolbar button:active {
+            transform: translateY(0);
+        }
+        
+        #colorPicker {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            background: #333;
+        }
+        
+        #colorPicker::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+            padding: 0;
+        }
+        
+        #brushSize {
+            background: #333 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") no-repeat right 0.75rem center/12px;
+            padding-right: 2.5rem;
+        }
+        
+        #clearCanvas {
+            background-color: #4a4a4a;
+            border-color: #666;
+        }
+        
+        @media (max-width: 640px) {
+            .canvas-container {
+                padding: 10px;
+                width: 95%;
+            }
+            
+            canvas {
+                width: 100%!important;
+                height: auto!important;
+            }
+            
+            .toolbar {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SketchBoard</h1>
+        <h2>Davney Restra Danaz - NRP 15-2022-069</h2>
+    </div>
+    
+    <center>
+        <div class="canvas-container">
+            <canvas id="drawingCanvas" width="800" height="500"></canvas>
+        </div>
+    </center>
+    
+    <div class="toolbar">
+        <input type="color" id="colorPicker" value="#ffffff">
+        
+        <select id="brushSize">
+            <option value="2">Kecil</option>
+            <option value="5">Sedang</option>
+            <option value="10">Besar</option>
+        </select>
+        
+        <button id="clearCanvas">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM18 9l-6 6m0-6l6 6"/>
+            </svg>
+            Bersihkan
+        </button>
+    </div>
+
+    <script>
+        // Tetap sama dengan script sebelumnya
+        const canvas = document.getElementById("drawingCanvas");
+        const ctx = canvas.getContext("2d");
+        let painting = false;
+        
+        function startPosition(e) {
+            painting = true;
+            draw(e);
+        }
+        
+        function endPosition() {
+            painting = false;
+            ctx.beginPath();
+        }
+        
+        function draw(e) {
+            if (!painting) return;
+            ctx.lineWidth = document.getElementById("brushSize").value;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = document.getElementById("colorPicker").value;
+            
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+        
+        canvas.addEventListener("mousedown", startPosition);
+        canvas.addEventListener("mouseup", endPosition);
+        canvas.addEventListener("mousemove", draw);
+        
+        document.getElementById("clearCanvas").addEventListener("click", function() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    </script>
+</body>
+</html>
